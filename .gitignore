@@ -1,4 +1,4 @@
 /log/
-/wordpress/
+/public_html/
 .DS_Store
-/wp-content/db.php
+/public_html/wp-content/db.php
