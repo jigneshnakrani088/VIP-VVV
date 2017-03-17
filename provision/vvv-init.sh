@@ -80,10 +80,10 @@ function update_plugins {
 	for i in ${plugins[@]}; do
   		if ! $(noroot wp plugin is-installed ${i}); then
   			echo "Installing plugin: ${i}"
-  			noroot wp plugin install ${i} --activate-network
+  			noroot wp plugin install ${i} --activate-network --path="${VVV_PATH_TO_SITE}/public_html"
   		else
   			echo "Updating plugin: ${i}"
-  			noroot wp plugin update ${i}
+  			noroot wp plugin update --path="${VVV_PATH_TO_SITE}/public_html" ${i} 
   		fi
 	done
 }
