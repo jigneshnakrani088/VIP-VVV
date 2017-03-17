@@ -16,10 +16,13 @@ mkdir -p ${VVV_PATH_TO_SITE}/log
 touch ${VVV_PATH_TO_SITE}/log/error.log
 touch ${VVV_PATH_TO_SITE}/log/access.log
 
+mkdir -p ${VVV_PATH_TO_SITE}/public_html
+
 # Install and configure the latest stable version of WordPress
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html" ]]; then
 	noroot wp core download --path="${VVV_PATH_TO_SITE}/public_html"
 fi
+
 
 cd ${VVV_PATH_TO_SITE}/public_html
 
@@ -97,7 +100,7 @@ if ! $(noroot wp core is-installed --allow-root); then
 	update_plugins
 
 	echo "Installing VIP Shared Plugins..."
-	mkdir -p ${VVV_PATH_TO_SITE}/wp-content/themes/vip/plugins/
+	mkdir -p ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/plugins/
 	svn co https://vip-svn.wordpress.com/plugins/ ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/plugins/
 
 	echo "Installing VIP MU Plugins..."
