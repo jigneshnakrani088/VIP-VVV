@@ -103,6 +103,10 @@ if ! $(noroot wp core is-installed --allow-root); then
 	echo "Installing VIP MU Plugins..."
 	git clone --recursive https://github.com/automattic/vip-wpcom-mu-plugins ${VVV_PATH_TO_SITE}/wp-content/mu-plugins
 
+	echo "Copying batcache dropin file..."
+	rm ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
+	cp ${VVV_PATH_TO_SITE}/wp-content/mu-plugins/batcache/advanced-cache.php ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
+
 	echo "Installing Minimum Viable VIP Theme..."
 	git clone https://github.com/Automattic/Minimum-Viable-VIP.git ${VVV_PATH_TO_SITE}/wp-content/themes/vip/minimumviablevip
 
@@ -124,7 +128,11 @@ else
 	echo "Updating VIP MU Plugins..."
 	cd ${VVV_PATH_TO_SITE}/wp-content/mu-plugins
 	git pull
-	
+
+	echo "Copying batcache dropin file..."
+	rm ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
+	cp ${VVV_PATH_TO_SITE}/wp-content/mu-plugins/batcache/advanced-cache.php ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
+
 	echo "Updating Minimum Viable VIP theme..."
 	cd ${VVV_PATH_TO_SITE}/wp-content/themes/vip/minimumviablevip
 	git pull
