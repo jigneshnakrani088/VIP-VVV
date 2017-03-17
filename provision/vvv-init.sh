@@ -33,6 +33,7 @@ if ( ! isset( \$_SERVER['HTTP_HOST'] ) ) {
 }
 /** Disable Automatic core updates. */
 define( 'WP_AUTO_UPDATE_CORE', false );
+define( 'QUICKSTART_ENABLE_CONCAT', true );
 
 /**
  * WordPress Localized Language, defaults to English.
@@ -120,6 +121,10 @@ else
 	echo "Updating VIP Shared plugins..."
 	svn up ${VVV_PATH_TO_SITE}/wp-content/themes/vip/plugins/
 
+	echo "Updating VIP MU Plugins..."
+	cd ${VVV_PATH_TO_SITE}/wp-content/mu-plugins
+	git pull
+	
 	echo "Updating Minimum Viable VIP theme..."
 	cd ${VVV_PATH_TO_SITE}/wp-content/themes/vip/minimumviablevip
 	git pull
