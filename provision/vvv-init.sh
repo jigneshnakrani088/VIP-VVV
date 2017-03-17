@@ -16,8 +16,6 @@ mkdir -p ${VVV_PATH_TO_SITE}/log
 touch ${VVV_PATH_TO_SITE}/log/error.log
 touch ${VVV_PATH_TO_SITE}/log/access.log
 
-mkdir -p ${VVV_PATH_TO_SITE}/public_html
-
 # Install and configure the latest stable version of WordPress
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html" ]]; then
 	noroot wp core download --path="${VVV_PATH_TO_SITE}/public_html"
@@ -90,7 +88,7 @@ function update_plugins {
 
 if ! $(noroot wp core is-installed --allow-root); then
 	echo "Installing VIP..."
-	noroot wp core multisite-install --subdomains --url=${DOMAIN} --quiet --title="VIP" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+	noroot wp core multisite-install --subdomains --url=${DOMAIN} --quiet --title="VIP" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password" --path="${VVV_PATH_TO_SITE}/public_html"
 	#noroot wp core install --url=vip.localhost --quiet --title="VIP" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	echo "Installing twentyseventeen..."
 	# we don't need to activate this as it's activated on install, although it isn't included, hence the install
