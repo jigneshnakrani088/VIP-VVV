@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
+DB_NAME=`get_config_value 'db_name' "${VVV_SITE_NAME}"`
+DB_NAME=${DB_NAME//[\\\/\.\<\>\:\"\'\|\?\!\*-]/}
+DOMAIN=`get_primary_host "${VVV_SITE_NAME}".dev`
+DOMAINS=`get_hosts "${DOMAIN}"`
+
 # Make a database, if we don't already have one
-echo -e "\nCreating database 'vip' (if it's not already there)"
-mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS vip"
-mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON vip.* TO wp@localhost IDENTIFIED BY 'wp';"
+echo -e "\nCreating database '${DB_NAME}' (if it's not already there)"
+mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME}"
+mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO wp@localhost IDENTIFIED BY 'wp';"
 echo -e "\n DB operations done.\n\n"
 
 # Nginx Logs
@@ -20,11 +25,11 @@ cd ${VVV_PATH_TO_SITE}/wordpress
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/wordpress/wp-config.php" ]]; then
 	echo "Configuring VIP..."
-	noroot wp core config --dbname=vip --dbuser=wp --dbpass=wp --quiet --allow-root --extra-php <<PHP
+	noroot wp core config --dbname=${DB_NAME} --dbuser=wp --dbpass=wp --quiet --allow-root --extra-php <<PHP
 define( 'WP_CONTENT_DIR', dirname( __DIR__ ) . '/wp-content' );
 
 if ( ! isset( \$_SERVER['HTTP_HOST'] ) ) {
-	\$_SERVER['HTTP_HOST'] = 'vip.localhost';
+	\$_SERVER['HTTP_HOST'] = '${DOMAIN}';
 }
 /** Disable Automatic core updates. */
 define( 'WP_AUTO_UPDATE_CORE', false );
@@ -81,9 +86,9 @@ function update_plugins {
 
 if ! $(noroot wp core is-installed --allow-root); then
 	echo "Installing VIP..."
-	noroot wp core multisite-install --url=vip.localhost --quiet --title="VIP" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+	noroot wp core multisite-install --subdomains --url=${DOMAIN} --quiet --title="VIP" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 	#noroot wp core install --url=vip.localhost --quiet --title="VIP" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-	echo "Installing VIP default themes..."
+	echo "Installing twentyseventeen..."
 	# we don't need to activate this as it's activated on install, although it isn't included, hence the install
 	noroot wp theme install twentyseventeen
 	echo "Installing VIP default plugins..."
@@ -123,3 +128,6 @@ else
 	cd -;
 	echo "Finished Update VIP script"
 fi
+
+cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf.tmpl" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
+sed -i "s#{{DOMAINS_HERE}}#${DOMAINS}#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
