@@ -99,6 +99,9 @@ if ! $(noroot wp core is-installed --allow-root); then
 	mkdir -p ${VVV_PATH_TO_SITE}/wp-content/themes/vip/plugins/
 	svn co https://vip-svn.wordpress.com/plugins/ ${VVV_PATH_TO_SITE}/wp-content/themes/vip/plugins/
 
+	echo "Installing VIP MU Plugins..."
+	git clone --recursive https://github.com/automattic/vip-wpcom-mu-plugins ${VVV_PATH_TO_SITE}/wp-content/mu-plugins
+
 	echo "Installing Minimum Viable VIP Theme..."
 	git clone https://github.com/Automattic/Minimum-Viable-VIP.git ${VVV_PATH_TO_SITE}/wp-content/themes/vip/minimumviablevip
 
@@ -129,5 +132,9 @@ else
 	echo "Finished Update VIP script"
 fi
 
+echo "Setting up Nginx configs"
 cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf.tmpl" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
 sed -i "s#{{DOMAINS_HERE}}#${DOMAINS}#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
+echo "Finished Nginx config setup"
+
+echo "All done setting up ${DOMAIN}. Remember to checkout your VIP theme to ${VVV_PATH_TO_SITE}/wp-content/themes/vip/{your-theme}"
