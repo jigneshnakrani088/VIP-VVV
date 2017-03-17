@@ -2,21 +2,12 @@ server {
     listen       80;
     listen       443 ssl;
     server_name  {{DOMAINS_HERE}};
-    root         {vvv_path_to_site}/wordpress;
+    root         {vvv_path_to_site}/public_html;
 
     error_log    {vvv_path_to_site}/log/error.log;
     access_log   {vvv_path_to_site}/log/access.log;
 
     set          $upstream {upstream}; # todo, replace with PHP 7 so it's hard set to the version .com uses
-
-    
-
-	# Requests to WordPress are made in /wordpress/, which is at the same
-    # level as /wp-content/. To properly handle these, we provide an alias
-    # to move up a directory and find static files.
-    location ~ ^/wp-content/(.*)$ {
-        alias {vvv_path_to_site}/wp-content/$1;
-    }
 
     # Don't try to rewrite static assets
     # Just return 404 if not found
@@ -31,6 +22,6 @@ server {
     location /_static/ {
         include /etc/nginx/fastcgi_params;
         fastcgi_pass   $upstream;
-        fastcgi_param SCRIPT_FILENAME {vvv_path_to_site}/wp-content/mu-plugins/http-concat/ngx-http-concat.php;
+        fastcgi_param SCRIPT_FILENAME {vvv_path_to_site}/public_html/wp-content/mu-plugins/http-concat/ngx-http-concat.php;
     }
 }

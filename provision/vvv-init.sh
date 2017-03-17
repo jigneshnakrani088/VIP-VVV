@@ -17,13 +17,13 @@ touch ${VVV_PATH_TO_SITE}/log/error.log
 touch ${VVV_PATH_TO_SITE}/log/access.log
 
 # Install and configure the latest stable version of WordPress
-if [[ ! -d "${VVV_PATH_TO_SITE}/wordpress" ]]; then
-	wp core download --path="${VVV_PATH_TO_SITE}/wordpress" --allow-root
+if [[ ! -d "${VVV_PATH_TO_SITE}/public_html" ]]; then
+	noroot wp core download --path="${VVV_PATH_TO_SITE}/public_html"
 fi
 
-cd ${VVV_PATH_TO_SITE}/wordpress
+cd ${VVV_PATH_TO_SITE}/public_html
 
-if [[ ! -f "${VVV_PATH_TO_SITE}/wordpress/wp-config.php" ]]; then
+if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
 	echo "Configuring VIP..."
 	noroot wp core config --dbname=${DB_NAME} --dbuser=wp --dbpass=wp --quiet --allow-root --extra-php <<PHP
 define( 'WP_CONTENT_DIR', dirname( __DIR__ ) . '/wp-content' );
@@ -98,20 +98,20 @@ if ! $(noroot wp core is-installed --allow-root); then
 
 	echo "Installing VIP Shared Plugins..."
 	mkdir -p ${VVV_PATH_TO_SITE}/wp-content/themes/vip/plugins/
-	svn co https://vip-svn.wordpress.com/plugins/ ${VVV_PATH_TO_SITE}/wp-content/themes/vip/plugins/
+	svn co https://vip-svn.wordpress.com/plugins/ ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/plugins/
 
 	echo "Installing VIP MU Plugins..."
-	git clone --recursive https://github.com/automattic/vip-wpcom-mu-plugins ${VVV_PATH_TO_SITE}/wp-content/mu-plugins
+	git clone --recursive https://github.com/automattic/vip-wpcom-mu-plugins ${VVV_PATH_TO_SITE}/public_html/wp-content/mu-plugins
 
 	echo "Copying batcache dropin file..."
-	rm ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
-	cp ${VVV_PATH_TO_SITE}/wp-content/mu-plugins/batcache/advanced-cache.php ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
+	rm ${VVV_PATH_TO_SITE}/public_html/wp-content/advanced-cache.php
+	cp ${VVV_PATH_TO_SITE}/public_html/wp-content/mu-plugins/batcache/advanced-cache.php ${VVV_PATH_TO_SITE}/public_html/wp-content/advanced-cache.php
 
 	echo "Installing Minimum Viable VIP Theme..."
-	git clone https://github.com/Automattic/Minimum-Viable-VIP.git ${VVV_PATH_TO_SITE}/wp-content/themes/vip/minimumviablevip
+	git clone https://github.com/Automattic/Minimum-Viable-VIP.git ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/minimumviablevip
 
 	echo "Installing _s Theme..."
-	git clone https://github.com/Automattic/_s.git ${VVV_PATH_TO_SITE}/wp-content/themes/_s
+	git clone https://github.com/Automattic/_s.git ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/_s
 
 	echo "Completed Initial VIP Install script"
 else
@@ -123,31 +123,32 @@ else
 	update_plugins
 
 	echo "Updating VIP Shared plugins..."
-	svn up ${VVV_PATH_TO_SITE}/wp-content/themes/vip/plugins/
+	svn up ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/plugins/
 
 	echo "Updating VIP MU Plugins..."
-	cd ${VVV_PATH_TO_SITE}/wp-content/mu-plugins
+	cd ${VVV_PATH_TO_SITE}/public_html/wp-content/mu-plugins
 	git pull
 
 	echo "Copying batcache dropin file..."
-	rm ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
-	cp ${VVV_PATH_TO_SITE}/wp-content/mu-plugins/batcache/advanced-cache.php ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
+	rm ${VVV_PATH_TO_SITE}/public_html/wp-content/advanced-cache.php
+	cp ${VVV_PATH_TO_SITE}/public_html/wp-content/mu-plugins/batcache/advanced-cache.php ${VVV_PATH_TO_SITE}/public_html/wp-content/advanced-cache.php
 
 	echo "Updating Minimum Viable VIP theme..."
-	cd ${VVV_PATH_TO_SITE}/wp-content/themes/vip/minimumviablevip
+	cd ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/minimumviablevip
 	git pull
 	cd -;
 
 	echo "Updating _s theme..."
-	cd ${VVV_PATH_TO_SITE}/wp-content/themes/_s
+	cd ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/_s
 	git pull
 	cd -;
 	echo "Finished Update VIP script"
 fi
 
-echo "Setting up Nginx configs"
+echo "Setting up ${DOMAIN} Nginx configs"
 cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf.tmpl" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
 sed -i "s#{{DOMAINS_HERE}}#${DOMAINS}#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
-echo "Finished Nginx config setup"
+echo "Finished ${DOMAIN} Nginx config setup"
 
-echo "All done setting up ${DOMAIN}. Remember to checkout your VIP theme to ${VVV_PATH_TO_SITE}/wp-content/themes/vip/{your-theme}"
+echo "All done setting up ${DOMAIN}. Remember to checkout your VIP theme to ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/{your-theme}"
+echo "Error logs are located at ${VVV_PATH_TO_SITE}/log/error.log"
