@@ -36,7 +36,7 @@ if ( ! isset( \$_SERVER['HTTP_HOST'] ) ) {
 }
 /** Disable Automatic core updates. */
 define( 'WP_AUTO_UPDATE_CORE', false );
-define( 'QUICKSTART_ENABLE_CONCAT', true );
+define( 'QUICKSTART_ENABLE_CONCAT', false );
 
 /**
  * WordPress Localized Language, defaults to English.
@@ -100,21 +100,21 @@ if ! $(noroot wp core is-installed --allow-root); then
 	update_plugins
 
 	echo "Installing VIP Shared Plugins..."
-	mkdir -p ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/plugins/
-	svn co https://vip-svn.wordpress.com/plugins/ ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/plugins/
+	mkdir -p ${VVV_PATH_TO_SITE}/wp-content/themes/vip/plugins/
+	svn co https://vip-svn.wordpress.com/plugins/ ${VVV_PATH_TO_SITE}/wp-content/themes/vip/plugins/
 
 	echo "Installing VIP MU Plugins..."
-	git clone --recursive https://github.com/automattic/vip-wpcom-mu-plugins ${VVV_PATH_TO_SITE}/public_html/wp-content/mu-plugins
+	git clone --recursive https://github.com/automattic/vip-wpcom-mu-plugins ${VVV_PATH_TO_SITE}/wp-content/mu-plugins
 
 	echo "Copying batcache dropin file..."
-	rm ${VVV_PATH_TO_SITE}/public_html/wp-content/advanced-cache.php
-	cp ${VVV_PATH_TO_SITE}/public_html/wp-content/mu-plugins/batcache/advanced-cache.php ${VVV_PATH_TO_SITE}/public_html/wp-content/advanced-cache.php
+	rm ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
+	cp ${VVV_PATH_TO_SITE}/wp-content/mu-plugins/batcache/advanced-cache.php ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
 
 	echo "Installing Minimum Viable VIP Theme..."
-	git clone https://github.com/Automattic/Minimum-Viable-VIP.git ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/minimumviablevip
+	git clone https://github.com/Automattic/Minimum-Viable-VIP.git ${VVV_PATH_TO_SITE}/wp-content/themes/vip/minimumviablevip
 
 	echo "Installing _s Theme..."
-	git clone https://github.com/Automattic/_s.git ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/_s
+	git clone https://github.com/Automattic/_s.git ${VVV_PATH_TO_SITE}/wp-content/themes/_s
 
 	echo "Completed Initial VIP Install script"
 else
@@ -126,23 +126,23 @@ else
 	update_plugins
 
 	echo "Updating VIP Shared plugins..."
-	svn up ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/plugins/
+	svn up ${VVV_PATH_TO_SITE}/wp-content/themes/vip/plugins/
 
 	echo "Updating VIP MU Plugins..."
-	cd ${VVV_PATH_TO_SITE}/public_html/wp-content/mu-plugins
+	cd ${VVV_PATH_TO_SITE}/wp-content/mu-plugins
 	git pull
 
 	echo "Copying batcache dropin file..."
-	rm ${VVV_PATH_TO_SITE}/public_html/wp-content/advanced-cache.php
-	cp ${VVV_PATH_TO_SITE}/public_html/wp-content/mu-plugins/batcache/advanced-cache.php ${VVV_PATH_TO_SITE}/public_html/wp-content/advanced-cache.php
+	rm ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
+	cp ${VVV_PATH_TO_SITE}/wp-content/mu-plugins/batcache/advanced-cache.php ${VVV_PATH_TO_SITE}/wp-content/advanced-cache.php
 
 	echo "Updating Minimum Viable VIP theme..."
-	cd ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/minimumviablevip
+	cd ${VVV_PATH_TO_SITE}/wp-content/themes/vip/minimumviablevip
 	git pull
 	cd -;
 
 	echo "Updating _s theme..."
-	cd ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/_s
+	cd ${VVV_PATH_TO_SITE}/wp-content/themes/_s
 	git pull
 	cd -;
 	echo "Finished Update VIP script"
@@ -153,5 +153,5 @@ cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf.tmpl" "${VVV_PATH_TO_SITE}/p
 sed -i "s#{{DOMAINS_HERE}}#${DOMAINS}#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
 echo "Finished ${DOMAIN} Nginx config setup"
 
-echo "All done setting up ${DOMAIN}. Remember to checkout your VIP theme to ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/vip/{your-theme}"
+echo "All done setting up ${DOMAIN}. Remember to checkout your VIP theme to ${VVV_PATH_TO_SITE}/wp-content/themes/vip/{your-theme}"
 echo "Error logs are located at ${VVV_PATH_TO_SITE}/log/error.log"
