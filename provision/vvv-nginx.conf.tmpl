@@ -9,6 +9,13 @@ server {
 
     set          $upstream {upstream}; # todo, replace with PHP 7 so it's hard set to the version .com uses
 
+    # Requests to WordPress are made in /wordpress/, which is at the same
+    # level as /wp-content/. To properly handle these, we provide an alias
+    # to move up a directory and find static files.
+    location ~ ^/wp-content/(.*)$ {
+        alias {vvv_path_to_site}/wp-content/$1;
+    }
+
     # Don't try to rewrite static assets
     # Just return 404 if not found
     # The reason is pretty simple: each 404'd asset will try to pass that to WP
